@@ -3,7 +3,7 @@ package com.florence.skillbridge.DTO.Request;
 import jakarta.validation.constraints.*;
 
 public class RegisterDTO {
-    @NotNull(message = "Email is required")
+    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email")
     private String email;
 

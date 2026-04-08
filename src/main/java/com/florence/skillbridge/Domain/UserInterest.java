@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(name = "user_interest")
 public class UserInterest {
     @EmbeddedId
-    private UserInterestId id;
+    private UserInterestId id = new UserInterestId();
 
     @ManyToOne
     @MapsId("userId")
@@ -18,6 +18,9 @@ public class UserInterest {
     @MapsId("skillId")
     @JoinColumn(name = "skill_id")
     private Skill interest;
+
+    public UserInterest() {
+    }
 
     public UserInterest(User user, Skill interest) {
         this.user = user;
@@ -36,11 +39,11 @@ public class UserInterest {
         return id;
     }
 
-    public Skill getInterest() {
+    public Skill getSkill() {
         return interest;
     }
 
-    public void setInterest(Skill interest) {
+    public void setSkill(Skill interest) {
         this.interest = interest;
     }
 

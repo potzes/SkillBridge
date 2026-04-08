@@ -6,6 +6,7 @@ import com.florence.skillbridge.DTO.Request.AddUserInterestDTO;
 import com.florence.skillbridge.DTO.Request.AddUserSkillDTO;
 import com.florence.skillbridge.DTO.Response.UserDTO;
 import com.florence.skillbridge.Exception.ConflictException;
+import com.florence.skillbridge.Exception.DTOValidationException;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
 import com.florence.skillbridge.Service.Interface.UserService;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.BadRequestException;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet({"/me/*"})
 public class MeServlet extends HttpServlet {
@@ -56,6 +58,7 @@ public class MeServlet extends HttpServlet {
 
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e);
         }
     }
 
@@ -94,8 +97,12 @@ public class MeServlet extends HttpServlet {
             ErrorDTO errorDTO = new ErrorDTO(404, "Resource error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);
 
+        } catch (DTOValidationException e) {
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Invalid field(s)", e.getErrors());
+            errorSender.sendError(userErrorDTO, response, jsonb);
+
         } catch (ConflictException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", e.getMessage());
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", Map.of("Conflict error", e.getMessage()));
             errorSender.sendError(userErrorDTO, response, jsonb);
 
         } catch (BadRequestException e) {
@@ -103,6 +110,7 @@ public class MeServlet extends HttpServlet {
             errorSender.sendError(errorDTO, response, jsonb);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -111,20 +119,23 @@ public class MeServlet extends HttpServlet {
         Jsonb jsonb = JsonbBuilder.create();
         String pathInfo = request.getPathInfo();
         String[] parts;
-        UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userId");
         try {
             if (pathInfo != null) {
                 parts = pathInfo.split("/");
 
                 // DELETE /me/skills/{skill id}
                 if (parts.length == 3 && parts[1].equals("skills")) {
+                    sessionCheck(request);
                     int skillId = Integer.parseInt(parts[2]);
+                    UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userId");
                     userService.deleteSkillToUser(skillId, userDTO);
                 }
                 // DELETE /me/interests/{skill id}
                 else
                 if (parts.length == 3 && parts[1].equals("interests")){
+                    sessionCheck(request);
                     int skillId = Integer.parseInt(parts[2]);
+                    UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userId");
                     userService.deleteInterestToUser(skillId, userDTO);
                 } else {
                     throw  new BadRequestException("Invalid path");
@@ -133,6 +144,10 @@ public class MeServlet extends HttpServlet {
             else {
                 throw new BadRequestException("Invalid Http Method");
             }
+        } catch (UnauthorizedException e) {
+            ErrorDTO errorDTO = new ErrorDTO(401, "Authorization error", e.getMessage());
+            errorSender.sendError(errorDTO, response, jsonb);
+
         } catch (NumberFormatException e) {
             ErrorDTO errorDTO = new ErrorDTO(400, "Request error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);

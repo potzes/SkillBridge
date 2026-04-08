@@ -13,6 +13,7 @@ import com.florence.skillbridge.Util.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 
 @ApplicationScoped
 public class AuthServiceImpl implements AuthService {
@@ -26,6 +27,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void register(RegisterDTO registerDTO) {
+        if(registerDTO.getEmail() == null || registerDTO.getUsername() == null || registerDTO.getPassword() == null) throw new BadRequestException("Missing JSON required field");
+
         validator.validate(registerDTO);
         isEmailOrUsernameExist(registerDTO.getEmail(), registerDTO.getUsername());
 
@@ -35,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDTO login(LoginDTO loginDTO) {
+        if(loginDTO.getUsernameOrEmail() == null || loginDTO.getPassword() == null) throw new BadRequestException("Missing JSON required field");
         validator.validate(loginDTO);
 
         String usernameOrEmail = loginDTO.getUsernameOrEmail();
@@ -46,9 +50,8 @@ public class AuthServiceImpl implements AuthService {
 
         if(!verifiedPassword(password, user.getHashedPassword())) throw new InvalidCredentialsException("Invalid Credentials");
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        return userDTO;
+        return new UserDTO(user.getId());
+
     }
 
 //---------------------Helper Methods-----------------------------------------------------

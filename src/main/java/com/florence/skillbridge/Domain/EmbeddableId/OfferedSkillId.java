@@ -20,4 +20,23 @@ public class OfferedSkillId implements Serializable {
     public int hashCode() {
         return Objects.hash(requestId, skillId);
     }
+
+    public OfferedSkillId() {
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public int getSkillId() {
+        return skillId;
+    }
+
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
+
+    public void setSkillId(int skillId) {
+        this.skillId = skillId;
+    }
 }

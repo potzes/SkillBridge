@@ -3,6 +3,7 @@ package com.florence.skillbridge.Domain;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "feedbacks")
@@ -12,11 +13,12 @@ public class Feedback {
     private int id;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "match_id", referencedColumnName = "match_id"),
-            @JoinColumn(name = "writer_id", referencedColumnName = "participant_id")
-    })
-    private MatchParticipant writer;
+    @JoinColumn(name = "match_id")
+    private Match match;
+
+    @ManyToOne
+    @JoinColumn(name = "writer_id")
+    private User writer;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id")
@@ -30,6 +32,30 @@ public class Feedback {
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    public Feedback() {
+    }
+
+    public Feedback(Match match, User writer, User receiver, String message, int rating) {
+        this.match = match;
+        this.writer = writer;
+        this.receiver = receiver;
+        this.message = message;
+        this.rating = rating;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    public Match getMatch() {
+        return match;
+    }
+
+    public void setMatch(Match match) {
+        this.match = match;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -59,16 +85,12 @@ public class Feedback {
         return rating;
     }
 
-    public User getWriter() {
-        return writer.getParticipant();
-    }
-
-    public Match getMatch() {
-        return writer.getMatch();
-    }
-
-    public void setWriter(MatchParticipant writer) {
+    public void setWriter(User writer) {
         this.writer = writer;
+    }
+
+    public User getWriter() {
+        return writer;
     }
 
     public void setRating(int rating) {

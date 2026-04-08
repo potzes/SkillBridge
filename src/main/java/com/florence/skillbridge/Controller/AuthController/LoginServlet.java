@@ -18,8 +18,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.ws.rs.BadRequestException;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -45,15 +47,28 @@ public class LoginServlet extends HttpServlet {
             session.setMaxInactiveInterval(60 * 60);
 
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            response.setHeader("Set-Cookie",
+                    "JSESSIONID=" + session.getId() +
+                            "; Path=/SkillBridge; HttpOnly; SameSite=None ; Secure"
+            );
 
         } catch (JsonbException e) {
             ErrorDTO errorDTO = new ErrorDTO(400, "JSON Error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);
-        } catch (DTOValidationException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Invalid field(s)", "Invalid field(s)", e.getErrors());
+        } catch (BadRequestException e) {
+            ErrorDTO errorDTO = new ErrorDTO(400, "Request error", e.getMessage());
+            errorSender.sendError(errorDTO, response, jsonb);
+
+        } catch (ConflictException e) {
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", Map.of("Authorization error", e.getMessage()));
             errorSender.sendError(userErrorDTO, response, jsonb);
+
+        }  catch (DTOValidationException e) {
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Invalid field(s)", e.getErrors());
+            errorSender.sendError(userErrorDTO, response, jsonb);
+
         } catch (InvalidCredentialsException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(401, "Authentication Error", e.getMessage());
+            UserErrorDTO userErrorDTO = new UserErrorDTO(401, "Authentication Error", Map.of("credential", e.getMessage()));
             errorSender.sendError(userErrorDTO, response, jsonb);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

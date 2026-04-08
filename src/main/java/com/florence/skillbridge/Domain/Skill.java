@@ -18,8 +18,11 @@ public class Skill {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private Timestamp createdAt;
+
+    public Skill() {
+    }
 
     public Skill(String name, Category category) {
         this.name = name;

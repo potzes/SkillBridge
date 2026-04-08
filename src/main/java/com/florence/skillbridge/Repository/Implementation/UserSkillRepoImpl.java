@@ -30,10 +30,10 @@ public class UserSkillRepoImpl implements UserSkillRepo {
         }
     }
 
-    public List<UserSkill> findUserSkills(User user) {
-        return em.createQuery("SELECT us FROM UserSkill us WHERE us.user = :user", UserSkill.class)
+    public Optional<List<UserSkill>> findUserSkills(User user) {
+        return Optional.of(em.createQuery("SELECT us FROM UserSkill us WHERE us.user = :user", UserSkill.class)
                 .setParameter("user", user)
-                .getResultList();
+                .getResultList());
     }
 
     public List<Skill> findUserInterests(User user) {

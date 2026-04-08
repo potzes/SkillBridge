@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserInterestRepo {
     Optional<UserInterest> findUserInterestByUserInterestId(User user, Skill skill);
-    List<Skill> findUserInterests(User user);
+    Optional<List<Skill>> findUserInterests(User user);
     void addInterestToUser(UserInterest userInterest);
     void deleteInterestToUser(UserInterest userInterest);
 }

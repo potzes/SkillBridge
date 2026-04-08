@@ -33,6 +33,9 @@ public class UserSkill {
         this.proofLink = proofLink;
     }
 
+    public UserSkill() {
+    }
+
     public UserSkillId getUserSkillId() {
         return userSkillId;
     }

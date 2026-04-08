@@ -6,7 +6,7 @@ public class AddUserSkillDTO {
 
     @NotBlank(message = "Skill name is required")
     @Size(min = 3, message = "Skill must be at least 3 characters")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Skill must not contain number or symbol")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Skill must not contain number or symbol")
     private String name;
 
     @NotNull(message = "Category is required")

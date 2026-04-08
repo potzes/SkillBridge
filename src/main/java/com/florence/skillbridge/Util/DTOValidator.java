@@ -25,7 +25,8 @@ public class DTOValidator {
             Map<String, String> errors = violations.stream()
                     .collect(Collectors.toMap(
                             v -> v.getPropertyPath().toString(),
-                            ConstraintViolation::getMessage
+                            ConstraintViolation::getMessage,
+                            (existing, newVal) -> existing + ", " + newVal
                     ));
             throw new DTOValidationException(errors);
         }

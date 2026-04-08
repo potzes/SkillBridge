@@ -32,10 +32,10 @@ public class UserInterestRepoImpl implements UserInterestRepo {
     }
 
     @Override
-    public List<Skill> findUserInterests(User user) {
-        return em.createQuery("SELECT ui.interest FROM UserInterest ui WHERE ui.user = :user", Skill.class)
+    public Optional<List<Skill>> findUserInterests(User user) {
+        return Optional.of(em.createQuery("SELECT ui.interest FROM UserInterest ui WHERE ui.user = :user", Skill.class)
                 .setParameter("user", user)
-                .getResultList();
+                .getResultList());
     }
 
     @Override

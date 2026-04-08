@@ -15,8 +15,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.BadRequestException;
 
 import java.io.IOException;
+import java.util.Map;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
@@ -35,15 +37,19 @@ public class RegisterServlet extends HttpServlet {
 
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (ConflictException e) {
-            ErrorDTO errorDTO = new ErrorDTO(400, "Request error", e.getMessage());
-            errorSender.sendError(errorDTO, response, jsonb);
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", Map.of("Authorization error", e.getMessage()));
+            errorSender.sendError(userErrorDTO, response, jsonb);
 
         } catch (JsonbException e) {
             ErrorDTO errorDTO = new ErrorDTO(400, "JSON error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);
 
+        } catch (BadRequestException e) {
+            ErrorDTO errorDTO = new ErrorDTO(400, "Request error", e.getMessage());
+            errorSender.sendError(errorDTO, response, jsonb);
+
         } catch (DTOValidationException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Field error", "Invalid user input", e.getErrors());
+            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Field error", e.getErrors());
             errorSender.sendError(userErrorDTO, response, jsonb);
 
         } catch (Exception e) {

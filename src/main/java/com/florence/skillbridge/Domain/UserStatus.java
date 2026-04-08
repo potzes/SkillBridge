@@ -11,7 +11,7 @@ public class UserStatus {
     @Id
     @Column(updatable = false, insertable = false)
     private int id;
-
+    @Column
     private String name;
 
     public void setId(int id) {

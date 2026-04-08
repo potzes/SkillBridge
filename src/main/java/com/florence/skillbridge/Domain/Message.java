@@ -3,6 +3,7 @@ package com.florence.skillbridge.Domain;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
@@ -12,11 +13,12 @@ public class Message {
     private int id;
 
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "match_id", referencedColumnName = "match_id"),
-            @JoinColumn(name = "sender_id", referencedColumnName = "participant_id")
-    })
-    private MatchParticipant sender;
+    @JoinColumn(name = "match_id")
+    private Match match;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @Column
     private String message;
@@ -27,6 +29,27 @@ public class Message {
 
     @Column(name = "sent_at")
     private Timestamp sentAt;
+
+    @PrePersist
+    protected void onCreate() {
+        sentAt = Timestamp.valueOf(LocalDateTime.now());
+    }
+
+    protected Message() {
+    }
+
+    public Message(Match match, User sender, String message, Message replyTo) {
+        this.match = match;
+        this.sender = sender;
+        this.message = message;
+        this.replyTo = replyTo;
+    }
+
+    public Message(Match match, User sender, String message) {
+        this.match = match;
+        this.sender = sender;
+        this.message = message;
+    }
 
     public int getId() {
         return id;
@@ -44,20 +67,24 @@ public class Message {
         this.id = id;
     }
 
-    public void setSender(MatchParticipant sender) {
-        this.sender = sender;
-    }
-
     public Message getReplyTo() {
         return replyTo;
     }
 
-    public User getSender() {
-        return sender.getParticipant();
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public void setMatch(Match match) {
+        this.match = match;
     }
 
     public Match getMatch() {
-        return sender.getMatch();
+        return match;
+    }
+
+    public User getSender() {
+        return sender;
     }
 
     public Timestamp getSentAt() {

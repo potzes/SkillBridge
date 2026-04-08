@@ -20,12 +20,16 @@ public class Request {
     })
     private UserSkill receiver;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "status_id")
     private RequestStatus status;
 
     @Column
     private String message;
+
+    public void setReceiver(UserSkill receiver) {
+        this.receiver = receiver;
+    }
 
     public int getId() {
         return id;

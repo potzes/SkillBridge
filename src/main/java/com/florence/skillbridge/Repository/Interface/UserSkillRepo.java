@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UserSkillRepo {
     Optional<UserSkill> findUserSkillByUserSkillId(User user, Skill skill);
-    List<UserSkill> findUserSkills(User user);
+    Optional<List<UserSkill>> findUserSkills(User user);
     void addSkillToUser(UserSkill userSkill);
     void deleteSkillToUser(UserSkill userSkill);
 }

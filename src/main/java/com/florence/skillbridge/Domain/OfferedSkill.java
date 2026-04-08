@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 @Table(name = "offered_skills")
 public class OfferedSkill {
     @EmbeddedId
-    private OfferedSkillId id;
+    private OfferedSkillId id = new OfferedSkillId();
 
     @ManyToOne
     @MapsId("requestId")
@@ -22,6 +22,17 @@ public class OfferedSkill {
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
+
+    public OfferedSkill() {
+    }
+
+    public OfferedSkill(Request request, Skill skill, User sender) {
+        this.request = request;
+        this.skill = skill;
+        this.sender = sender;
+    }
+
+
 
     public void setSender(User sender) {
         this.sender = sender;
@@ -46,6 +57,8 @@ public class OfferedSkill {
     public Request getRequest() {
         return request;
     }
+
+
 
     public void setSkill(Skill skill) {
         this.skill = skill;

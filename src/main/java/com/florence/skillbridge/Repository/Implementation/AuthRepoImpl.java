@@ -1,6 +1,7 @@
 package com.florence.skillbridge.Repository.Implementation;
 
 import com.florence.skillbridge.Domain.User;
+import com.florence.skillbridge.Domain.UserStatus;
 import com.florence.skillbridge.Repository.Interface.AuthRepo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -15,6 +16,7 @@ public class AuthRepoImpl implements AuthRepo {
     EntityManager em;
 
     public void save(User user) {
+        user.setStatus(em.getReference(UserStatus.class, 1));
         em.persist(user);
     }
 
