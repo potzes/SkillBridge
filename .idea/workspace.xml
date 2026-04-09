@@ -9,77 +9,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ea31be0-cd92-4aef-8270-c31274a76272" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/MatchController/MatchServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/RequestController/RequestServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/SkillController/SkillServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/UserController/UsersServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/FeedbackDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/SendMessageDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/SendRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/UserFilterDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/MatchesDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/MessageDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/OtherProfileDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/PagedMessageDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/PagedUsersDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/ReceivedRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/SentRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/UserCardDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/FeedbackRepoImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/MatchRepoImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/MessageRepoImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/RequestRepoImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/FeedbackRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/MatchRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/MessageRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/RequestRepo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Implementation/SkillServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Interface/SkillService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Util/UserCard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Util/UserFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="226ff81f-1e6e-4788-888a-78c0c4a9ddfc" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Util/JsonbProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f017413c-eb19-44f7-a2e3-e9d7a2f33093.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f017413c-eb19-44f7-a2e3-e9d7a2f33093/storage_v2/_src_/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f017413c-eb19-44f7-a2e3-e9d7a2f33093/storage_v2/_src_/schema/mysql.osA4Bg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f017413c-eb19-44f7-a2e3-e9d7a2f33093/storage_v2/_src_/schema/performance_schema.kIw0nw.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f017413c-eb19-44f7-a2e3-e9d7a2f33093/storage_v2/_src_/schema/sys.zb4BAA.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/LogoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/LogoutServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/RegisterServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/AuthController/RegisterServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/MatchController/MatchServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/MatchController/MatchServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/RequestController/RequestServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/RequestController/RequestServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/SkillController/SkillServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/SkillController/SkillServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/UserController/MeServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/UserController/MeServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/ErrorResponse/UserErrorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/ErrorResponse/UserErrorDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/AddUserInterestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/AddUserInterestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/AddUserSkillDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/AddUserSkillDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/RegisterDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Request/RegisterDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/SkillDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/SkillDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/DTO/Response/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/EmbeddableId/OfferedSkillId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/EmbeddableId/OfferedSkillId.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/EmbeddableId/UserInterestId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/EmbeddableId/UserInterestId.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Feedback.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Feedback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Match.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Match.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/OfferedSkill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/OfferedSkill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Skill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/Skill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserInterest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserInterest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserSkill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserSkill.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Domain/UserStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/AuthRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/AuthRepoImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/SkillRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/SkillRepoImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserInterestRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserInterestRepoImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/UserController/UsersServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Controller/UserController/UsersServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/MatchRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/MatchRepoImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserRepoImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserSkillRepoImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Implementation/UserSkillRepoImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/SkillRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/SkillRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserInterestRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserInterestRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserSkillRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/UserSkillRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Implementation/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Implementation/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/MatchRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Repository/Interface/MatchRepo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Implementation/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Implementation/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Interface/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Service/Interface/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Util/DTOValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/florence/skillbridge/Util/DTOValidator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +40,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -104,14 +54,11 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
-  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "customColor": "",
   "associatedIndex": 4
 }]]></component>
-  <component name="ProjectId" id="3C4TNATWTBzum3lBYNIMXRhfKov" />
+  <component name="ProjectId" id="3C6yfWZOzKeJHlNNThJT4nL8OFJ" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -124,22 +71,12 @@
     "JBoss/WildFly Server.JBoss/WildFly 39.0.3.Final.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "reference.settings.project.maven.archetype.catalogs"
-  },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
-    ]
+    "git-widget-placeholder": "master"
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="JBoss/WildFly 39.0.3.Final" type="JBossConfiguration" factoryName="Local" APPLICATION_SERVER_NAME="JBoss/WildFly 39.0.3.Final" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
-      <option name="SHOW_DIALOG_ON_UPDATE" value="false" />
-      <option name="UPDATING_POLICY" value="redeploy-artifacts" />
+    <configuration name="JBoss/WildFly 39.0.3.Final" type="JBossConfiguration" factoryName="Local" APPLICATION_SERVER_NAME="JBoss/WildFly 39.0.3.Final" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="$PROJECT_DIR$/../../../../Program Files/Java/jdk-25" nameIsGenerated="true">
       <deployment>
         <artifact name="SkillBridge:war exploded">
           <settings />
@@ -155,7 +92,7 @@
       </server-settings>
       <predefined_log_file enabled="true" id="JBoss" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="58082" />
+        <option name="DEBUG_PORT" value="64040" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -210,21 +147,14 @@
       </method>
     </configuration>
   </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
-      </set>
-    </attachedChunks>
-  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5ea31be0-cd92-4aef-8270-c31274a76272" name="Changes" comment="" />
-      <created>1775643801549</created>
+      <changelist id="226ff81f-1e6e-4788-888a-78c0c4a9ddfc" name="Changes" comment="" />
+      <created>1775720419446</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1775643801549</updated>
-      <workItem from="1775643802836" duration="11856000" />
+      <updated>1775720419446</updated>
+      <workItem from="1775720421198" duration="7003000" />
     </task>
     <servers />
   </component>

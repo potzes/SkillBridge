@@ -21,17 +21,19 @@ public class UserRepoImpl implements UserRepo {
     @PersistenceContext(name = "SkillBridgePU")
     EntityManager em;
 
+    @Override
     public Optional<User> findUserById(int id) {
         try {
-            User user1 = em.createQuery("SELECT u FROM User u WHERE u.id = :id", User.class)
+            User user = em.createQuery("SELECT u FROM User u WHERE u.id = :id", User.class)
                     .setParameter("id", id)
                     .getSingleResult();
-            return Optional.of(user1);
+            return Optional.of(user);
         } catch (NoResultException e) {
             return Optional.empty();
         }
     }
 
+    @Override
     public Double getAverageRating(User user) {
         return em.createQuery("SELECT AVG(f.rating) FROM Feedback f WHERE f.receiver = :user", Double.class)
                 .setParameter("user", user)
@@ -42,33 +44,17 @@ public class UserRepoImpl implements UserRepo {
     public List<UserCard> getUserCards(UserFilter userFilter, User userMe) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<UserCard> cq = cb.createQuery(UserCard.class);
-
-        Root<UserSkill> userSkill = cq.from(UserSkill.class);
-        Join<UserSkill, Expertise> expertise = userSkill.join("expertise");
-        Join<UserSkill, User> user = userSkill.join("user");
-        Join<UserSkill, Skill> userSkillSkill = userSkill.join("skill");
-        Join<Skill, Category> skillCategory = userSkillSkill.join("category");
-
-        Subquery<Double> avgRating = cq.subquery(Double.class);
-        Root<Feedback> feedback = avgRating.from(Feedback.class);
-        avgRating
-                .select(cb.avg(feedback.get("rating")))
-                .where(cb.equal(feedback.get("receiver"), user));
-
-        Subquery<Skill> userInterest = cq.subquery(Skill.class);
-        Root<UserInterest> userInterestRoot = userInterest.from(UserInterest.class);
-        Join<UserInterest, Skill> userInterestSkill = userInterestRoot.join("interest");
-        Join<Skill, Category> interestCategory = userInterestSkill.join("category");
-        userInterest
-                .select(userInterestRoot.get("interest"))
-                .where(cb.equal(userInterestRoot.get("user"), user));
+        QuerySetup s = buildJoins(cq);
 
         List<Predicate> predicates = new ArrayList<>();
-
-        buildPredicates(userFilter, userMe, predicates, cb, user, skillCategory, interestCategory, expertise);
+        buildPredicates(userFilter, userMe, predicates, cb, s.user(), s.skillCategory(), s.interestCategory(), s.expertise());
 
         cq.where(predicates.toArray(new Predicate[0]));
-        cq.select(cb.construct(UserCard.class, user.get("id"), user.get("username"), user.get("status"), avgRating)).distinct(true);
+        cq.select(cb.construct(UserCard.class,
+                s.user().get("id"),
+                s.user().get("username"),
+                s.user().get("status"),
+                s.avgRating())).distinct(true);
 
         List<UserCard> content = em.createQuery(cq)
                 .setFirstResult(userFilter.getPage())
@@ -92,74 +78,87 @@ public class UserRepoImpl implements UserRepo {
     public Long getUserCardsCount(UserFilter userFilter, User userMe) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        QuerySetup s = buildJoins(cq);
 
+        List<Predicate> predicates = new ArrayList<>();
+        buildPredicates(userFilter, userMe, predicates, cb, s.user(), s.skillCategory(), s.interestCategory(), s.expertise());
+
+        cq.select(cb.countDistinct(s.user().get("id")));
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return em.createQuery(cq).getSingleResult();
+    }
+
+    // ----------------------------Helper Methods----------------------------------------------------------
+
+    private <T> QuerySetup buildJoins(CriteriaQuery<T> cq) {
         Root<UserSkill> userSkill = cq.from(UserSkill.class);
         Join<UserSkill, Expertise> expertise = userSkill.join("expertise");
         Join<UserSkill, User> user = userSkill.join("user");
         Join<UserSkill, Skill> userSkillSkill = userSkill.join("skill");
         Join<Skill, Category> skillCategory = userSkillSkill.join("category");
 
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
         Subquery<Double> avgRating = cq.subquery(Double.class);
         Root<Feedback> feedback = avgRating.from(Feedback.class);
-        avgRating
-                .select(cb.avg(feedback.get("rating")))
+        avgRating.select(cb.avg(feedback.get("rating")))
                 .where(cb.equal(feedback.get("receiver"), user));
 
         Subquery<Skill> userInterest = cq.subquery(Skill.class);
         Root<UserInterest> userInterestRoot = userInterest.from(UserInterest.class);
         Join<UserInterest, Skill> userInterestSkill = userInterestRoot.join("interest");
         Join<Skill, Category> interestCategory = userInterestSkill.join("category");
-        userInterest
-                .select(userInterestRoot.get("interest"))
+        userInterest.select(userInterestRoot.get("interest"))
                 .where(cb.equal(userInterestRoot.get("user"), user));
 
-        List<Predicate> predicates = new ArrayList<>();
-
-        buildPredicates(userFilter, userMe, predicates, cb, user, skillCategory, interestCategory, expertise);
-
-        if(userFilter.getExpertise() != null) {
-            predicates.add(cb.equal(expertise.get("id"), userFilter.getExpertise()));
-        }
-
-        cq.select(cb.countDistinct(user.get("id")));
-        cq.where(predicates.toArray(new Predicate[0]));
-
-        return em.createQuery(cq).getSingleResult();
+        return new QuerySetup(user, expertise, skillCategory, interestCategory, avgRating);
     }
 
-    private static void buildPredicates(UserFilter userFilter, User userMe, List<Predicate> predicates, CriteriaBuilder cb, Join<UserSkill, User> user, Join<Skill, Category> skillCategory, Join<Skill, Category> interestCategory, Join<UserSkill, Expertise> expertise) {
+    private static void buildPredicates(
+            UserFilter userFilter,
+            User userMe,
+            List<Predicate> predicates,
+            CriteriaBuilder cb,
+            Join<UserSkill, User> user,
+            Join<Skill, Category> skillCategory,
+            Join<Skill, Category> interestCategory,
+            Join<UserSkill, Expertise> expertise) {
+
         predicates.add(cb.notEqual(user.get("id"), userMe.getId()));
-        if(userFilter.getWho() != null) {
-            if(userFilter.getWho()) {
-                if(userFilter.getCategory() != null) predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
-            }
-            else {
-                if(userFilter.getCategory() != null) predicates.add(cb.equal(interestCategory.get("id"), userFilter.getCategory()));
+
+        if (userFilter.getWho() != null) {
+            if (userFilter.getWho()) {
+                if (userFilter.getCategory() != null)
+                    predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
+            } else {
+                if (userFilter.getCategory() != null)
+                    predicates.add(cb.equal(interestCategory.get("id"), userFilter.getCategory()));
             }
         } else {
-            if(userFilter.getCategory() != null) predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
+            if (userFilter.getCategory() != null)
+                predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
         }
 
-        if(userFilter.getExpertise() != null) {
+        if (userFilter.getExpertise() != null)
             predicates.add(cb.equal(expertise.get("id"), userFilter.getExpertise()));
-        }
     }
 
-//----------------------------Helper Methods----------------------------------------------------------
-
     private Map<Integer, List<Skill>> fetchSkillsByUserIds(List<Integer> ids) {
-        List<UserSkill> result = em.createQuery("SELECT us FROM UserSkill us WHERE us.user.id IN :ids", UserSkill.class)
+        List<UserSkill> result = em.createQuery(
+                        "SELECT us FROM UserSkill us WHERE us.user.id IN :ids", UserSkill.class)
                 .setParameter("ids", ids)
                 .getResultList();
 
         return result.stream().collect(Collectors.groupingBy(
-                        us -> us.getUser().getId(),
-                        Collectors.mapping(UserSkill::getSkill, Collectors.toList())
-                ));
+                us -> us.getUser().getId(),
+                Collectors.mapping(UserSkill::getSkill, Collectors.toList())
+        ));
     }
 
     private Map<Integer, List<Skill>> fetchInterestsByUserIds(List<Integer> ids) {
-        List<UserInterest> result = em.createQuery("SELECT ui FROM UserInterest ui WHERE ui.user.id IN :ids", UserInterest.class)
+        List<UserInterest> result = em.createQuery(
+                        "SELECT ui FROM UserInterest ui WHERE ui.user.id IN :ids", UserInterest.class)
                 .setParameter("ids", ids)
                 .getResultList();
 
@@ -168,4 +167,12 @@ public class UserRepoImpl implements UserRepo {
                 Collectors.mapping(UserInterest::getSkill, Collectors.toList())
         ));
     }
+
+    private record QuerySetup(
+            Join<UserSkill, User> user,
+            Join<UserSkill, Expertise> expertise,
+            Join<Skill, Category> skillCategory,
+            Join<Skill, Category> interestCategory,
+            Subquery<Double> avgRating
+    ) {}
 }

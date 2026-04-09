@@ -12,9 +12,9 @@ import com.florence.skillbridge.Exception.UnauthorizedException;
 import com.florence.skillbridge.Service.Interface.UserService;
 import com.florence.skillbridge.DTO.Response.MeDTO;
 import com.florence.skillbridge.Util.ErrorSender;
+import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,10 +32,12 @@ public class MeServlet extends HttpServlet {
     UserService userService;
     @Inject
     ErrorSender errorSender;
+    @Inject
+    private JsonbProvider jsonbProvider;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
 
         try {
             String pathInfo = request.getPathInfo();
@@ -64,7 +66,7 @@ public class MeServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
 
         try {
             String pathInfo = request.getPathInfo();
@@ -102,7 +104,7 @@ public class MeServlet extends HttpServlet {
             errorSender.sendError(userErrorDTO, response, jsonb);
 
         } catch (ConflictException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", Map.of("Conflict error", e.getMessage()));
+            UserErrorDTO userErrorDTO = new UserErrorDTO(409, "Conflict error", Map.of("Conflict error", e.getMessage()));
             errorSender.sendError(userErrorDTO, response, jsonb);
 
         } catch (BadRequestException e) {
@@ -116,7 +118,7 @@ public class MeServlet extends HttpServlet {
 
     @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         String pathInfo = request.getPathInfo();
         String[] parts;
         try {

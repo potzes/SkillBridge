@@ -6,15 +6,14 @@ import com.florence.skillbridge.DTO.Request.UserFilterDTO;
 import com.florence.skillbridge.DTO.Response.OtherProfileDTO;
 import com.florence.skillbridge.DTO.Response.PagedUsersDTO;
 import com.florence.skillbridge.DTO.Response.UserDTO;
-import com.florence.skillbridge.Domain.User;
 import com.florence.skillbridge.Exception.ConflictException;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
 import com.florence.skillbridge.Service.Interface.UserService;
 import com.florence.skillbridge.Util.ErrorSender;
+import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +28,12 @@ public class UsersServlet extends HttpServlet {
     UserService userService;
     @Inject
     private ErrorSender errorSender;
+    @Inject
+    private JsonbProvider jsonbProvider;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         try {
             sessionCheck(request);
             String pathInfo = request.getPathInfo();
@@ -64,7 +65,7 @@ public class UsersServlet extends HttpServlet {
                     jsonb.toJson(otherProfileDTO, response.getWriter());
                 }
                 else {
-                    ErrorDTO errorDTO = new ErrorDTO(401, "URL error", "Invalid path");
+                    ErrorDTO errorDTO = new ErrorDTO(400, "URL error", "Invalid path");
                     errorSender.sendError(errorDTO, response, jsonb);
                 }
             }
@@ -85,12 +86,13 @@ public class UsersServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         try {
             sessionCheck(request);
             String pathInfo = request.getPathInfo();
             String[] parts = pathInfo.split("/");
 
+            // POST users/{user id}/requests
             if (parts.length == 3 && parts[2].equals("requests")) {
                 UserDTO userDTO = (UserDTO) request.getSession(false).getAttribute("userId");
                 SendRequestDTO sendRequestDTO = jsonb.fromJson(request.getReader(), SendRequestDTO.class);
@@ -113,7 +115,7 @@ public class UsersServlet extends HttpServlet {
             ErrorDTO errorDTO = new ErrorDTO(404, "Resource error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);
         } catch (ConflictException e) {
-            ErrorDTO errorDTO = new ErrorDTO(400, "Conflict error", e.getMessage());
+            ErrorDTO errorDTO = new ErrorDTO(409, "Conflict error", e.getMessage());
             errorSender.sendError(errorDTO, response, jsonb);
         } catch (Exception e) {
             response.sendError(500);

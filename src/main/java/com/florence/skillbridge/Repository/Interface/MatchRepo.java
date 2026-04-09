@@ -12,5 +12,6 @@ public interface MatchRepo {
     Optional<Match> getMatch(User user, int matchId);
     void saveMatch(Match match);
     Optional<Match> getOngoingMatch(User user);
+    Optional<Match> getOngoingMatch(User user, int matchId);
     void endMatch(Match match);
 }

@@ -9,9 +9,9 @@ import com.florence.skillbridge.Util.ErrorSender;
 import com.florence.skillbridge.DTO.Response.UserDTO;
 import com.florence.skillbridge.Service.Interface.AuthService;
 import com.florence.skillbridge.DTO.Request.LoginDTO;
+import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,10 +29,12 @@ public class LoginServlet extends HttpServlet {
     private AuthService authService;
     @Inject
     private ErrorSender errorSender;
+    @Inject
+    private JsonbProvider jsonbProvider;
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         try {
             if(request.getSession(false) != null && request.getSession().getAttribute("userId") != null)
                 throw new ConflictException("Session already exists");
@@ -46,7 +48,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("userId", userDTO);
             session.setMaxInactiveInterval(60 * 60);
 
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setHeader("Set-Cookie",
                     "JSESSIONID=" + session.getId() +
                             "; Path=/SkillBridge; HttpOnly; SameSite=None ; Secure"
@@ -60,7 +62,7 @@ public class LoginServlet extends HttpServlet {
             errorSender.sendError(errorDTO, response, jsonb);
 
         } catch (ConflictException e) {
-            UserErrorDTO userErrorDTO = new UserErrorDTO(400, "Conflict error", Map.of("Authorization error", e.getMessage()));
+            UserErrorDTO userErrorDTO = new UserErrorDTO(409, "Conflict error", Map.of("Authorization error", e.getMessage()));
             errorSender.sendError(userErrorDTO, response, jsonb);
 
         }  catch (DTOValidationException e) {

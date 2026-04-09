@@ -8,6 +8,7 @@ import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
 import com.florence.skillbridge.Service.Interface.UserService;
 import com.florence.skillbridge.Util.ErrorSender;
+import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -27,10 +28,12 @@ public class RequestServlet extends HttpServlet {
     UserService userService;
     @Inject
     private ErrorSender errorSender;
+    @Inject
+    private JsonbProvider jsonbProvider;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         try {
             sessionCheck(request);
             String pathInfo = request.getPathInfo();
@@ -65,6 +68,7 @@ public class RequestServlet extends HttpServlet {
         }
     }
 
+    @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Jsonb jsonb = JsonbBuilder.create();
         try {
@@ -115,6 +119,7 @@ public class RequestServlet extends HttpServlet {
         }
     }
 
+    @Override
     public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Jsonb jsonb = JsonbBuilder.create();
         try {

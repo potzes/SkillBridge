@@ -174,6 +174,7 @@ public PagedUsersDTO getFilteredUsers(UserFilterDTO userFilterDTO, UserDTO userD
     @Override
     public void sendRequest(int senderId, int receiverId, SendRequestDTO sendRequestDTO) {
         User sender = userRepo.findUserById(senderId).orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
+        if(matchRepo.getOngoingMatch(sender).isPresent()) throw new BadRequestException("You can't send match request while having an ongoing match");
         User receiver = userRepo.findUserById(receiverId).orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
         Skill requestedSkill = skillRepo.findSkillById(sendRequestDTO.getRequestedSkillId()).orElseThrow(() -> new ResourceNotFoundException("Requested skill not found"));
         UserSkill userSkill = userSkillRepo.findUserSkillByUserSkillId(receiver, requestedSkill).orElseThrow(() -> new ResourceNotFoundException("Requested skill not found"));
@@ -193,8 +194,7 @@ public PagedUsersDTO getFilteredUsers(UserFilterDTO userFilterDTO, UserDTO userD
         List<Skill> offeredSkills = skillRepo.getOfferedSkills(sender,sendRequestDTO.getOfferedSkillIds()).orElseThrow(() -> new ResourceNotFoundException("Offered skill does not exist in sender profile"));
         List<OfferedSkill> offeredSkills1 = new ArrayList<>();
         for (Skill offeredSkill : offeredSkills) {
-            Request request1 = requestRepo.getRequest(sender, userSkill).orElseThrow(() -> new RuntimeException("Request saving error"));
-            offeredSkills1.add(new OfferedSkill(request1, offeredSkill, sender));
+            offeredSkills1.add(new OfferedSkill(request, offeredSkill, sender));
         }
 
         requestRepo.saveOfferedSkills(offeredSkills1);
@@ -319,7 +319,7 @@ public PagedUsersDTO getFilteredUsers(UserFilterDTO userFilterDTO, UserDTO userD
     public void endMatch(UserDTO userDTO, int matchId, String end) {
         if(!end.equals("true")) throw new BadRequestException("Invalid parameter value");
         User user = getUser(userDTO);
-        Match match = matchRepo.getOngoingMatch(user).orElseThrow(() -> new ResourceNotFoundException("No ongoing match to cancel"));
+        Match match = matchRepo.getOngoingMatch(user,matchId).orElseThrow(() -> new ResourceNotFoundException("No ongoing match to cancel"));
         matchRepo.endMatch(match);
     }
 
@@ -384,11 +384,11 @@ public PagedUsersDTO getFilteredUsers(UserFilterDTO userFilterDTO, UserDTO userD
         for (Message message : messages) {
             if(message.getReplyTo() != null)
                 messageDTOS.add(new MessageDTO(
-                        user.getUsername(), message.getId(), message.getMessage(), message.getReplyTo().getId(), message.getSentAt()
+                        message.getSender().getUsername(), message.getId(), message.getMessage(), message.getReplyTo().getId(), message.getSentAt()
                 ));
             else
                 messageDTOS.add(new MessageDTO(
-                        user.getUsername(), message.getId(), message.getMessage(), message.getSentAt()
+                        message.getSender().getUsername(), message.getId(), message.getMessage(), message.getSentAt()
                 ));
         }
 

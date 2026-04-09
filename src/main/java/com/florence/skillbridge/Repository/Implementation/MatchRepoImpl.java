@@ -58,6 +58,20 @@ public class MatchRepoImpl implements MatchRepo {
     }
 
     @Override
+    public Optional<Match> getOngoingMatch(User user, int matchId) {
+        try {
+            Match match = em.createQuery("SELECT m FROM Match m WHERE (m.receiver.user = :user OR m.sender.user = :user) AND m.status = :ongoing AND m.id = :matchId", Match.class)
+                    .setParameter("user", user)
+                    .setParameter("ongoing", em.getReference(MatchStatus.class, 1))
+                    .setParameter("matchId", matchId)
+                    .getSingleResult();
+            return Optional.of(match);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public void endMatch(Match match) {
         MatchStatus end = em.getReference(MatchStatus.class, 3);
         match.setStatus(end);

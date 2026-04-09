@@ -5,9 +5,9 @@ import com.florence.skillbridge.DTO.Response.SkillDTO;
 import com.florence.skillbridge.Exception.UnauthorizedException;
 import com.florence.skillbridge.Service.Interface.SkillService;
 import com.florence.skillbridge.Util.ErrorSender;
+import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,10 +23,12 @@ public class SkillServlet extends HttpServlet {
     private SkillService skillService;
     @Inject
     ErrorSender errorSender;
+    @Inject
+    private JsonbProvider jsonbProvider;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Jsonb jsonb = JsonbBuilder.create();
+        Jsonb jsonb = jsonbProvider.getJsonb();
         try {
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("userId") == null) {
