@@ -11,7 +11,7 @@ import com.florence.skillbridge.Exception.ConflictException;
 import com.florence.skillbridge.Exception.DTOValidationException;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
-import com.florence.skillbridge.Service.Interface.UserService;
+import com.florence.skillbridge.Service.Interface.MatchService;
 import com.florence.skillbridge.Util.ErrorSender;
 import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
@@ -30,7 +30,7 @@ import java.util.Map;
 @WebServlet("/matches/*")
 public class MatchServlet extends HttpServlet {
     @Inject
-    UserService userService;
+    MatchService matchService;
     @Inject
     ErrorSender errorSender;
     @Inject
@@ -45,7 +45,7 @@ public class MatchServlet extends HttpServlet {
             if(request.getPathInfo() == null) {
                 UserDTO userDTO = (UserDTO) session.getAttribute("userId");
 
-                List<MatchesDTO> matchesDTOS = userService.getMatches(userDTO);
+                List<MatchesDTO> matchesDTOS = matchService.getMatches(userDTO);
                 jsonb.toJson(matchesDTOS, response.getWriter());
 
                  // GET matches/{match id}/messages
@@ -59,7 +59,7 @@ public class MatchServlet extends HttpServlet {
                     UserDTO userDTO = (UserDTO) session.getAttribute("userId");
                     int matchId = Integer.parseInt(parts[1]);
 
-                    PagedMessageDTO pagedMessageDTO = userService.getPagedMessages(userDTO, matchId, page, limit);
+                    PagedMessageDTO pagedMessageDTO = matchService.getPagedMessages(userDTO, matchId, page, limit);
                     jsonb.toJson(pagedMessageDTO, response.getWriter());
                 }
             }
@@ -96,7 +96,7 @@ public class MatchServlet extends HttpServlet {
             if(parts.length == 2) {
                 int matchId = Integer.parseInt(parts[1]);
 
-                userService.endMatch(userDTO, matchId, endParam);
+                matchService.endMatch(userDTO, matchId, endParam);
             } else throw new BadRequestException("Invalid URL");
 
         } catch (UnauthorizedException e) {
@@ -135,7 +135,7 @@ public class MatchServlet extends HttpServlet {
                 int matchId = Integer.parseInt(parts[1]);
                 FeedbackDTO feedbackDTO = jsonb.fromJson(request.getReader(), FeedbackDTO.class);
 
-                userService.submitFeedback(userDTO, matchId, feedbackDTO);
+                matchService.submitFeedback(userDTO, matchId, feedbackDTO);
                 response.setStatus(201);
 
             // POST matches/{match id}/messages
@@ -143,7 +143,7 @@ public class MatchServlet extends HttpServlet {
                 UserDTO userDTO = (UserDTO) session.getAttribute("userId");
                 int matchId = Integer.parseInt(parts[1]);
                 SendMessageDTO sendMessageDTO = jsonb.fromJson(request.getReader(), SendMessageDTO.class);
-                userService.sendMessage(userDTO, matchId, sendMessageDTO);
+                matchService.sendMessage(userDTO, matchId, sendMessageDTO);
                 response.setStatus(201);
             } else throw new BadRequestException("Invalid URL");
 

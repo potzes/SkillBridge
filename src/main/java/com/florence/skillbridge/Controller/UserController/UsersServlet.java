@@ -9,7 +9,8 @@ import com.florence.skillbridge.DTO.Response.UserDTO;
 import com.florence.skillbridge.Exception.ConflictException;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
-import com.florence.skillbridge.Service.Interface.UserService;
+import com.florence.skillbridge.Service.Interface.RequestService;
+import com.florence.skillbridge.Service.Interface.UserBrowseService;
 import com.florence.skillbridge.Util.ErrorSender;
 import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
@@ -25,7 +26,9 @@ import java.io.IOException;
 @WebServlet("/users/*")
 public class UsersServlet extends HttpServlet {
     @Inject
-    UserService userService;
+    UserBrowseService userBrowseService;
+    @Inject
+    RequestService requestService;
     @Inject
     private ErrorSender errorSender;
     @Inject
@@ -49,7 +52,7 @@ public class UsersServlet extends HttpServlet {
                 UserDTO userDTO = (UserDTO) request.getSession(false).getAttribute("userId");
 
                 UserFilterDTO userFilterDTO = new UserFilterDTO(page, limit, category, expertise, rating, who);
-                PagedUsersDTO pagedUsersDTO = userService.getFilteredUsers(userFilterDTO, userDTO);
+                PagedUsersDTO pagedUsersDTO = userBrowseService.getFilteredUsers(userFilterDTO, userDTO);
 
                 jsonb.toJson(pagedUsersDTO, response.getWriter());
             }
@@ -61,7 +64,7 @@ public class UsersServlet extends HttpServlet {
                 if(parts.length == 2) {
                     int userId = Integer.parseInt(parts[1]);
 
-                    OtherProfileDTO otherProfileDTO = userService.getOtherProfile(userId);
+                    OtherProfileDTO otherProfileDTO = userBrowseService.getOtherProfile(userId);
                     jsonb.toJson(otherProfileDTO, response.getWriter());
                 }
                 else {
@@ -99,7 +102,7 @@ public class UsersServlet extends HttpServlet {
                 int senderId = userDTO.getId();
                 int receiverId = Integer.parseInt(parts[1]);
 
-                userService.sendRequest(senderId, receiverId, sendRequestDTO);
+                requestService.sendRequest(senderId, receiverId, sendRequestDTO);
                 response.setStatus(201);
             } else {
                 ErrorDTO errorDTO = new ErrorDTO(400, "URL error", "Invalid path");

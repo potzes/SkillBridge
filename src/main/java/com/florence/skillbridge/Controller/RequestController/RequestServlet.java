@@ -6,7 +6,7 @@ import com.florence.skillbridge.DTO.Response.SentRequestDTO;
 import com.florence.skillbridge.DTO.Response.UserDTO;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
-import com.florence.skillbridge.Service.Interface.UserService;
+import com.florence.skillbridge.Service.Interface.RequestService;
 import com.florence.skillbridge.Util.ErrorSender;
 import com.florence.skillbridge.Util.JsonbProvider;
 import jakarta.inject.Inject;
@@ -25,7 +25,7 @@ import java.util.List;
 @WebServlet("/requests/*")
 public class RequestServlet extends HttpServlet {
     @Inject
-    UserService userService;
+    RequestService requestService;
     @Inject
     private ErrorSender errorSender;
     @Inject
@@ -45,12 +45,12 @@ public class RequestServlet extends HttpServlet {
 
                 // GET /requests/type?received
                 if (type.equals("received")) {
-                    List<ReceivedRequestDTO> receivedRequestDTOS = userService.getReceivedRequests(userDTO);
+                    List<ReceivedRequestDTO> receivedRequestDTOS = requestService.getReceivedRequests(userDTO);
                     jsonb.toJson(receivedRequestDTOS, response.getWriter());
 
                 // GET /requests/type?sent
                 } else if (type.equals("sent")) {
-                    List<SentRequestDTO> sentRequestDTOS = userService.getSentRequests(userDTO);
+                    List<SentRequestDTO> sentRequestDTOS = requestService.getSentRequests(userDTO);
                     jsonb.toJson(sentRequestDTOS, response.getWriter());
                 } else {
                     throw new BadRequestException("Invalid query");
@@ -87,14 +87,14 @@ public class RequestServlet extends HttpServlet {
                         HttpSession session = request.getSession(false);
                         UserDTO userDTO = (UserDTO) session.getAttribute("userId");
 
-                        userService.acceptRequest(userDTO, requestId, chosenSkill);
+                        requestService.acceptRequest(userDTO, requestId, chosenSkill);
                         response.setStatus(201);
                     } else if (responseParam.equals("reject")) {
                         sessionCheck(request);
                         HttpSession session = request.getSession(false);
                         UserDTO userDTO = (UserDTO) session.getAttribute("userId");
 
-                        userService.rejectRequest(userDTO, requestId);
+                        requestService.rejectRequest(userDTO, requestId);
                     }
                     else throw new BadRequestException("Invalid URL");
                 }
@@ -134,7 +134,7 @@ public class RequestServlet extends HttpServlet {
                 HttpSession session = request.getSession(false);
                 UserDTO userDTO = (UserDTO) session.getAttribute("userId");
 
-                userService.cancelRequest(userDTO, requestId);
+                requestService.cancelRequest(userDTO, requestId);
             }
             else {
                 throw new BadRequestException("Invalid URL");

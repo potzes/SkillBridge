@@ -9,7 +9,7 @@ import com.florence.skillbridge.Exception.ConflictException;
 import com.florence.skillbridge.Exception.DTOValidationException;
 import com.florence.skillbridge.Exception.ResourceNotFoundException;
 import com.florence.skillbridge.Exception.UnauthorizedException;
-import com.florence.skillbridge.Service.Interface.UserService;
+import com.florence.skillbridge.Service.Interface.ProfileService;
 import com.florence.skillbridge.DTO.Response.MeDTO;
 import com.florence.skillbridge.Util.ErrorSender;
 import com.florence.skillbridge.Util.JsonbProvider;
@@ -29,7 +29,7 @@ import java.util.Map;
 @WebServlet({"/me/*"})
 public class MeServlet extends HttpServlet {
     @Inject
-    UserService userService;
+    ProfileService profileService;
     @Inject
     ErrorSender errorSender;
     @Inject
@@ -130,7 +130,7 @@ public class MeServlet extends HttpServlet {
                     sessionCheck(request);
                     int skillId = Integer.parseInt(parts[2]);
                     UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userId");
-                    userService.deleteSkillToUser(skillId, userDTO);
+                    profileService.deleteSkillToUser(skillId, userDTO);
                 }
                 // DELETE /me/interests/{skill id}
                 else
@@ -138,7 +138,7 @@ public class MeServlet extends HttpServlet {
                     sessionCheck(request);
                     int skillId = Integer.parseInt(parts[2]);
                     UserDTO userDTO = (UserDTO) request.getSession().getAttribute("userId");
-                    userService.deleteInterestToUser(skillId, userDTO);
+                    profileService.deleteInterestToUser(skillId, userDTO);
                 } else {
                     throw  new BadRequestException("Invalid path");
                 }
@@ -174,7 +174,7 @@ public class MeServlet extends HttpServlet {
         HttpSession session = sessionCheck(request);
 
         UserDTO userDTO = (UserDTO) session.getAttribute("userId");
-        MeDTO meDTO = userService.getMyInfo(userDTO);
+        MeDTO meDTO = profileService.getMyInfo(userDTO);
         jsonb.toJson(meDTO, response.getWriter());
     }
 
@@ -185,7 +185,7 @@ public class MeServlet extends HttpServlet {
         UserDTO userDTO = (UserDTO) session.getAttribute("userId");
         AddUserSkillDTO addSkill = jsonb.fromJson(request.getReader(), AddUserSkillDTO.class);
 
-        userService.addSkillToUser(userDTO, addSkill);
+        profileService.addSkillToUser(userDTO, addSkill);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
@@ -196,7 +196,7 @@ public class MeServlet extends HttpServlet {
         UserDTO userDTO = (UserDTO) session.getAttribute("userId");
         AddUserInterestDTO addInterest = jsonb.fromJson(request.getReader(), AddUserInterestDTO.class);
 
-        userService.addInterestToUser(userDTO, addInterest);
+        profileService.addInterestToUser(userDTO, addInterest);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
