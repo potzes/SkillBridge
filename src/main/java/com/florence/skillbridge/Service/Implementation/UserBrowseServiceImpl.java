@@ -46,10 +46,11 @@ public class UserBrowseServiceImpl implements UserBrowseService {
         if(userFilterDTO.getWho() != null && !userFilterDTO.getWho().isBlank()) {
             if(userFilterDTO.getWho().equals("teach")) userFilter.setWho(true);
             else if(userFilterDTO.getWho().equals("learn")) userFilter.setWho(false);
+            else throw new BadRequestException("Invalid who parameter value");
         }
         else userFilter.setWho(true);
 
-        if(userFilterDTO.getPage() != null && !userFilterDTO.getPage().isBlank()) userFilter.setPage(intParser(userFilterDTO.getPage()));
+        if(userFilterDTO.getPage() != null && !userFilterDTO.getPage().isBlank()) userFilter.setPage(intParser(userFilterDTO.getPage()) - 1);
         else userFilter.setPage(0);
 
         if(userFilterDTO.getLimit() != null && !userFilterDTO.getLimit().isBlank()) userFilter.setLimit(intParser(userFilterDTO.getLimit()));

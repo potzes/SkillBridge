@@ -12,7 +12,7 @@ public class PagedUsersDTO {
 
     public PagedUsersDTO(List<UserCardDTO> userCards, int page, int totalPage, Long totalCount) {
         this.userCards = userCards;
-        this.page = page;
+        this.page = page + 1;
         this.totalPage = totalPage;
         this.totalCount = totalCount;
     }

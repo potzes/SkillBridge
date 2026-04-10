@@ -44,17 +44,31 @@ public class UserRepoImpl implements UserRepo {
     public List<UserCard> getUserCards(UserFilter userFilter, User userMe) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<UserCard> cq = cb.createQuery(UserCard.class);
-        QuerySetup s = buildJoins(cq);
+        if(userFilter.getWho()) {
+            QuerySetupTeach setupTeach = buildJoinsTeach(cq);
+            List<Predicate> predicates = new ArrayList<>();
+            buildPredicatesTeach(userFilter, userMe, predicates, cb, setupTeach.user(), setupTeach.skillCategory(), setupTeach.interestCategory(), setupTeach.expertise());
 
-        List<Predicate> predicates = new ArrayList<>();
-        buildPredicates(userFilter, userMe, predicates, cb, s.user(), s.skillCategory(), s.interestCategory(), s.expertise());
+            cq.where(predicates.toArray(new Predicate[0]));
+            cq.select(cb.construct(UserCard.class,
+                    setupTeach.user().get("id"),
+                    setupTeach.user().get("username"),
+                    setupTeach.user().get("status"),
+                    setupTeach.avgRating())).distinct(true);
+        }
+        else {
+            QuerySetupLearn setupLearn = buildJoinsLearn(cq);
+            List<Predicate> predicates = new ArrayList<>();
+            buildPredicatesLearn(userFilter, userMe, predicates, cb, setupLearn.user(), setupLearn.interestCategory());
 
-        cq.where(predicates.toArray(new Predicate[0]));
-        cq.select(cb.construct(UserCard.class,
-                s.user().get("id"),
-                s.user().get("username"),
-                s.user().get("status"),
-                s.avgRating())).distinct(true);
+            cq.where(predicates.toArray(new Predicate[0]));
+            cq.select(cb.construct(UserCard.class,
+                    setupLearn.user().get("id"),
+                    setupLearn.user().get("username"),
+                    setupLearn.user().get("status"),
+                    setupLearn.avgRating())).distinct(true);
+
+        }
 
         List<UserCard> content = em.createQuery(cq)
                 .setFirstResult(userFilter.getPage())
@@ -78,20 +92,32 @@ public class UserRepoImpl implements UserRepo {
     public Long getUserCardsCount(UserFilter userFilter, User userMe) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-        QuerySetup s = buildJoins(cq);
 
-        List<Predicate> predicates = new ArrayList<>();
-        buildPredicates(userFilter, userMe, predicates, cb, s.user(), s.skillCategory(), s.interestCategory(), s.expertise());
+        if(userFilter.getWho()) {
+            QuerySetupTeach setupTeach = buildJoinsTeach(cq);
+            List<Predicate> predicates = new ArrayList<>();
+            buildPredicatesTeach(userFilter, userMe, predicates, cb, setupTeach.user(), setupTeach.skillCategory(), setupTeach.interestCategory(), setupTeach.expertise());
 
-        cq.select(cb.countDistinct(s.user().get("id")));
-        cq.where(predicates.toArray(new Predicate[0]));
+            cq.select(cb.countDistinct(setupTeach.user().get("id")));
+            cq.where(predicates.toArray(new Predicate[0]));
 
+        }
+        else {
+            QuerySetupLearn setupLearn = buildJoinsLearn(cq);
+            List<Predicate> predicates = new ArrayList<>();
+            buildPredicatesLearn(userFilter, userMe, predicates, cb, setupLearn.user(), setupLearn.interestCategory());
+
+            cq.select(cb.countDistinct(setupLearn.user().get("id")));
+            cq.where(predicates.toArray(new Predicate[0]));
+
+        }
         return em.createQuery(cq).getSingleResult();
+
     }
 
     // ----------------------------Helper Methods----------------------------------------------------------
 
-    private <T> QuerySetup buildJoins(CriteriaQuery<T> cq) {
+    private <T> QuerySetupTeach buildJoinsTeach(CriteriaQuery<T> cq) {
         Root<UserSkill> userSkill = cq.from(UserSkill.class);
         Join<UserSkill, Expertise> expertise = userSkill.join("expertise");
         Join<UserSkill, User> user = userSkill.join("user");
@@ -112,10 +138,26 @@ public class UserRepoImpl implements UserRepo {
         userInterest.select(userInterestRoot.get("interest"))
                 .where(cb.equal(userInterestRoot.get("user"), user));
 
-        return new QuerySetup(user, expertise, skillCategory, interestCategory, avgRating);
+        return new QuerySetupTeach(user, expertise, skillCategory, interestCategory, avgRating);
     }
 
-    private static void buildPredicates(
+    private <T> QuerySetupLearn buildJoinsLearn(CriteriaQuery<T> cq) {
+        Root<UserInterest> userInterest = cq.from(UserInterest.class);
+        Join<UserInterest, User> user = userInterest.join("user");
+        Join<UserSkill, Skill> userInterestSkill = userInterest.join("interest");
+        Join<Skill, Category> interestCategory = userInterestSkill.join("category");
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        Subquery<Double> avgRating = cq.subquery(Double.class);
+        Root<Feedback> feedback = avgRating.from(Feedback.class);
+        avgRating.select(cb.avg(feedback.get("rating")))
+                .where(cb.equal(feedback.get("receiver"), user));
+
+        return new QuerySetupLearn(user, interestCategory, avgRating);
+    }
+
+    private static void buildPredicatesTeach(
             UserFilter userFilter,
             User userMe,
             List<Predicate> predicates,
@@ -127,21 +169,32 @@ public class UserRepoImpl implements UserRepo {
 
         predicates.add(cb.notEqual(user.get("id"), userMe.getId()));
 
-        if (userFilter.getWho() != null) {
-            if (userFilter.getWho()) {
-                if (userFilter.getCategory() != null)
-                    predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
-            } else {
-                if (userFilter.getCategory() != null)
-                    predicates.add(cb.equal(interestCategory.get("id"), userFilter.getCategory()));
-            }
-        } else {
+        if (userFilter.getWho()) {
             if (userFilter.getCategory() != null)
                 predicates.add(cb.equal(skillCategory.get("id"), userFilter.getCategory()));
+        } else {
+            if (userFilter.getCategory() != null)
+                predicates.add(cb.equal(interestCategory.get("id"), userFilter.getCategory()));
         }
 
         if (userFilter.getExpertise() != null)
             predicates.add(cb.equal(expertise.get("id"), userFilter.getExpertise()));
+    }
+
+    private static void buildPredicatesLearn(
+            UserFilter userFilter,
+            User userMe,
+            List<Predicate> predicates,
+            CriteriaBuilder cb,
+            Join<UserInterest, User> user,
+            Join<Skill, Category> interestCategory) {
+
+        predicates.add(cb.notEqual(user.get("id"), userMe.getId()));
+
+        if (!userFilter.getWho()) {
+            if (userFilter.getCategory() != null)
+                predicates.add(cb.equal(interestCategory.get("id"), userFilter.getCategory()));
+        }
     }
 
     private Map<Integer, List<Skill>> fetchSkillsByUserIds(List<Integer> ids) {
@@ -168,10 +221,16 @@ public class UserRepoImpl implements UserRepo {
         ));
     }
 
-    private record QuerySetup(
+    private record QuerySetupTeach(
             Join<UserSkill, User> user,
             Join<UserSkill, Expertise> expertise,
             Join<Skill, Category> skillCategory,
+            Join<Skill, Category> interestCategory,
+            Subquery<Double> avgRating
+    ) {}
+
+    private record QuerySetupLearn(
+            Join<UserInterest, User> user,
             Join<Skill, Category> interestCategory,
             Subquery<Double> avgRating
     ) {}

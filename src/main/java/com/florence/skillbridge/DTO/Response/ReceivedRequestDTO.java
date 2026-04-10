@@ -5,6 +5,7 @@ import java.util.List;
 public class ReceivedRequestDTO {
     private int senderId;
     private String senderName;
+    private String message;
     private int requestId;
     private String status;
     private Double senderRating;
@@ -19,6 +20,25 @@ public class ReceivedRequestDTO {
         this.senderRating = senderRating;
         this.offeredSkills = offeredSkills;
         this.requestedSkill = requestedSkill;
+    }
+
+    public ReceivedRequestDTO(int senderId, String senderName, String message, int requestId, String status, Double senderRating, List<SkillDTO> offeredSkills, SkillDTO requestedSkill) {
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.message = message;
+        this.requestId = requestId;
+        this.status = status;
+        this.senderRating = senderRating;
+        this.offeredSkills = offeredSkills;
+        this.requestedSkill = requestedSkill;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public void setSenderId(int senderId) {

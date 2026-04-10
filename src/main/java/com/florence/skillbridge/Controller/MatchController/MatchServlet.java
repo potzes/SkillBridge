@@ -48,7 +48,7 @@ public class MatchServlet extends HttpServlet {
                 List<MatchesDTO> matchesDTOS = matchService.getMatches(userDTO);
                 jsonb.toJson(matchesDTOS, response.getWriter());
 
-                 // GET matches/{match id}/messages
+                 // GET matches/{match id}/messages?page={}&limit={}
             } else {
                 String pathInfo = request.getPathInfo();
                 String[] parts = pathInfo.split("/");

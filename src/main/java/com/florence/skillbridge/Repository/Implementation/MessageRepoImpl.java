@@ -37,9 +37,9 @@ public class MessageRepoImpl implements MessageRepo {
     @Override
     public Optional<List<Message>> getMatchMessages(User user, Match match, int pageNum, int limitNum) {
         try {
-            List<Message> messages = em.createQuery("SELECT m FROM Message m WHERE m.match.id = :matchId", Message.class)
+            List<Message> messages = em.createQuery("SELECT m FROM Message m WHERE m.match.id = :matchId ORDER BY m.sentAt DESC", Message.class)
                     .setParameter("matchId", match.getId())
-                    .setFirstResult(pageNum)
+                    .setFirstResult(pageNum * limitNum)
                     .setMaxResults(limitNum)
                     .getResultList();
             return Optional.of(messages);

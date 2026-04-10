@@ -9,7 +9,8 @@ public interface RequestRepo {
     void sendRequest(Request request);
     void saveOfferedSkills(List<OfferedSkill> offeredSkills);
     RequestStatus getRequestStatusById(int id);
-    Optional<Request> getRequest(User sender, UserSkill receiver);
+    Optional<Request> getActiveRequest(User sender, UserSkill receiver);
+    Optional<Request> getActiveRequest(User sender, User receiver);
     Optional<List<Request>> getReceivedRequests(User user);
     Optional<List<Request>> getSentRequests(User user);
     Optional<Request> getSentRequest(User user, int requestId);

@@ -38,11 +38,15 @@ public class RequestServiceImpl implements RequestService {
         User sender = userRepo.findUserById(senderId).orElseThrow(() -> new ResourceNotFoundException("Sender not found"));
         if(matchRepo.getOngoingMatch(sender).isPresent()) throw new BadRequestException("You can't send match request while having an ongoing match");
         User receiver = userRepo.findUserById(receiverId).orElseThrow(() -> new ResourceNotFoundException("Receiver not found"));
+
+        Optional<Request> requestOptional = requestRepo.getActiveRequest(sender, receiver);
+        if(requestOptional.isPresent()) throw new ConflictException("You already sent a request to this user.");
+
         Skill requestedSkill = skillRepo.findSkillById(sendRequestDTO.getRequestedSkillId()).orElseThrow(() -> new ResourceNotFoundException("Requested skill not found"));
         UserSkill userSkill = userSkillRepo.findUserSkillByUserSkillId(receiver, requestedSkill).orElseThrow(() -> new ResourceNotFoundException("Requested skill not found"));
 
 
-        if(requestRepo.getRequest(sender, userSkill).isPresent()) throw new ConflictException("Cannot send multiple pending request to same user");
+        if(requestRepo.getActiveRequest(sender, userSkill).isPresent()) throw new ConflictException("Cannot send multiple pending request to same user");
         Request request = new Request();
         request.setSender(sender);
         request.setReceiver(userSkill);
@@ -77,9 +81,21 @@ public class RequestServiceImpl implements RequestService {
                     skillDTOS.add(new SkillDTO(skill));
                 }
 
+                if(request.getMessage() == null)
                 receivedRequestDTOS.add(new ReceivedRequestDTO(
                         request.getSender().getId()
                         , request.getSender().getUsername()
+                        , request.getId()
+                        , request.getStatus().getName()
+                        , userRepo.getAverageRating(request.getSender())
+                        , skillDTOS
+                        , new SkillDTO(request.getRequestedSkill())
+                ));
+                else
+                    receivedRequestDTOS.add(new ReceivedRequestDTO(
+                        request.getSender().getId()
+                        , request.getSender().getUsername()
+                        , request.getMessage()
                         , request.getId()
                         , request.getStatus().getName()
                         , userRepo.getAverageRating(request.getSender())

@@ -31,9 +31,22 @@ public class RequestRepoImpl implements RequestRepo {
                 .getSingleResult();
     }
 
-    public Optional<Request> getRequest(User sender, UserSkill receiver) {
+    @Override
+    public Optional<Request> getActiveRequest(User sender, UserSkill receiver) {
         try {
             Request request = em.createQuery("SELECT r FROM Request r WHERE r.sender = :sender AND r.receiver = :receiver AND r.status.id = 1", Request.class)
+                    .setParameter("sender", sender)
+                    .setParameter("receiver", receiver)
+                    .getSingleResult();
+            return Optional.of(request);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+    @Override
+    public Optional<Request> getActiveRequest(User sender, User receiver) {
+        try {
+            Request request = em.createQuery("SELECT r FROM Request r WHERE r.sender = :sender AND r.receiver.user = :receiver AND r.status.id = 1", Request.class)
                     .setParameter("sender", sender)
                     .setParameter("receiver", receiver)
                     .getSingleResult();
